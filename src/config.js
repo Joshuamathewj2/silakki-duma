@@ -55,7 +55,7 @@ export const CONFIG = {
       position: [-12, 0, -18],
       spawnOffset: [-9, 1.5, -13],
       color: '#ffd166',
-      hint: 'Walk up to the polaroid & press E to zoom in',
+      hint: 'Walk up to any polaroid & press E to zoom in',
     },
     {
       id: 'cake',
@@ -94,26 +94,30 @@ export const CONFIG = {
   zeroGWords: ['HAPPY', 'BELATED', 'BIRTHDAY', 'SRINATH'],
   zeroGToast: "Exams had gravity. This doesn't.",
 
-  // Zone 4 Memory Gallery photos
-  // Replace public/us.jpg with your photo!
-  // Add more photos to public/ and put their path in `src` below.
+  // Zone 4 Memory Gallery photos (4 frames from public/)
   galleryFrames: [
     {
-      id: 'main-us',
-      src: '/us.jpg',
-      caption: 'Joshua & Srinath • Day Ones',
+      id: 'img-1',
+      src: '/img1.png',
+      caption: 'Srinath & Joshua • Day Ones',
       isMain: true,
     },
     {
-      id: 'extra-1',
-      src: null, // e.g. '/memory2.jpg' once you drop a file in public/
-      caption: 'Slot 2 • Drop photo in src/config.js',
+      id: 'img-2',
+      src: '/img2.png',
+      caption: 'Certified Broski Moments',
       isMain: false,
     },
     {
-      id: 'extra-2',
-      src: null, // e.g. '/memory3.jpg'
-      caption: 'Slot 3 • Drop photo in src/config.js',
+      id: 'img-3',
+      src: '/img3.png',
+      caption: '12 AM Crew Forever',
+      isMain: false,
+    },
+    {
+      id: 'img-4',
+      src: '/img4.png',
+      caption: 'Ride or Die',
       isMain: false,
     },
   ],
@@ -135,12 +139,12 @@ export const CONFIG = {
     signature: '— Joshua',
   },
 
-  // Countdown to Joshua's birthday (Month 1-12, Day 1-31)
-  senderBirthday: {
-    month: 5,
-    day: 14,
-    label: '14 MAY',
+  // Countdown to Srinath's next birthday (17 NOV — Month 1-12, Day 1-31)
+  recipientBirthday: {
+    month: 11,
+    day: 17,
+    label: '17 NOV',
     funnyNote:
-      "Set an alarm bro. No Anna University exam excuse allowed for you — I'm expecting that exact 12:00:00 AM text.",
+      "Next 17 NOV at 12:00:00 AM sharp — zero misses from me this time, broski! No Anna University exam excuse allowed.",
   },
 };

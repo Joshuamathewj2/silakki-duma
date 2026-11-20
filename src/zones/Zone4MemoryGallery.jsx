@@ -165,7 +165,11 @@ function PolaroidFrame({ frame, position, rotationY = 0, scale = 1 }) {
           {/* Photo Plane (Exact aspect ratio!) */}
           <mesh position={[0, photoOffsetY, 0.08]}>
             <planeGeometry args={[photoW, photoH]} />
-            <meshBasicMaterial map={photoTex || fallbackTex} />
+            <meshBasicMaterial
+              key={photoTex ? 'loaded' : 'fallback'}
+              map={photoTex || fallbackTex}
+              toneMapped={false}
+            />
           </mesh>
 
           {/* Bottom Caption Strip */}
@@ -225,36 +229,66 @@ function FloatingMemoryCards({ center }) {
 
 /**
  * Zone 4: "Memory Gallery"
- * Displays /us.jpg in the center polaroid + 2 extra configurable frames from src/config.js.
- * Walking near the main frame lets the player press E to smoothly zoom into the photo!
+ * Displays 4 Polaroid frames (img1.png, img2.png, img3.png, img4.png) in a curved
+ * gallery arc. Walking near any frame lets the player press E to zoom into it!
  */
 export function Zone4MemoryGallery() {
   const center = CONFIG.zones[3].position; // [-12, 0, -18]
-  const wasNearRef = useRef(false);
+  const activeFrameIdRef = useRef(null);
+
+  // Curved gallery arc layout for the 4 Polaroid frames
+  const framePlacements = useMemo(
+    () => [
+      { pos: [center[0] - 5.2, 0, center[2] + 2.4], rotY: 0.92, scale: 0.95 },
+      { pos: [center[0] - 1.8, 0, center[2] - 0.6], rotY: 0.48, scale: 1.05 },
+      { pos: [center[0] + 2.2, 0, center[2] - 1.2], rotY: 0.08, scale: 1.05 },
+      { pos: [center[0] + 5.6, 0, center[2] + 0.8], rotY: -0.42, scale: 0.95 },
+    ],
+    [center]
+  );
 
   useFrame(() => {
     const state = useGameStore.getState();
     const [px, , pz] = state.playerPos;
-    const dist = Math.hypot(px - center[0], pz - center[2]);
-    const isNear = dist < 5.8;
 
-    if (isNear && !wasNearRef.current) {
-      wasNearRef.current = true;
-      state.setInteractPrompt({
-        label: 'Press [E] to Zoom into Our Photo',
-        action: () => {
-          audio.playInteract();
-          // Smoothly dolly camera directly in front of the main polaroid
-          useGameStore.getState().setPhotoZoomTarget({
-            position: [center[0] + 1.8, 2.9, center[2] + 4.4],
-            lookAt: [center[0], 2.75, center[2]],
-            caption: CONFIG.galleryFrames[0].caption,
-          });
-        },
-      });
-    } else if (!isNear && wasNearRef.current) {
-      wasNearRef.current = false;
-      if (state.interactPrompt?.label?.includes('Photo')) {
+    // Find the closest frame within 4.6 units so player can zoom into any of the 4 photos
+    let closestIdx = -1;
+    let closestDist = 4.6;
+    CONFIG.galleryFrames.forEach((f, idx) => {
+      const p = framePlacements[idx];
+      if (!p) return;
+      const d = Math.hypot(px - p.pos[0], pz - p.pos[2]);
+      if (d < closestDist) {
+        closestDist = d;
+        closestIdx = idx;
+      }
+    });
+
+    const nextId = closestIdx >= 0 ? CONFIG.galleryFrames[closestIdx].id : null;
+    if (nextId !== activeFrameIdRef.current) {
+      activeFrameIdRef.current = nextId;
+      if (closestIdx >= 0) {
+        const frame = CONFIG.galleryFrames[closestIdx];
+        const placement = framePlacements[closestIdx];
+        // Position camera cleanly in front of this frame along its normal vector
+        const nx = Math.sin(placement.rotY);
+        const nz = Math.cos(placement.rotY);
+        state.setInteractPrompt({
+          label: `Press [E] to Zoom: ${frame.caption}`,
+          action: () => {
+            audio.playInteract();
+            useGameStore.getState().setPhotoZoomTarget({
+              position: [
+                placement.pos[0] + nx * 4.4,
+                2.75,
+                placement.pos[2] + nz * 4.4,
+              ],
+              lookAt: [placement.pos[0], 2.6, placement.pos[2]],
+              caption: frame.caption,
+            });
+          },
+        });
+      } else if (state.interactPrompt?.label?.includes('Zoom')) {
         state.setInteractPrompt(null);
       }
     }
@@ -264,33 +298,18 @@ export function Zone4MemoryGallery() {
 
   return (
     <group name="zone-4-gallery">
-      {/* Main Polaroid (/us.jpg) */}
-      <PolaroidFrame
-        frame={frames[0]}
-        position={[center[0], 0, center[2]]}
-        rotationY={0.38}
-        scale={1.15}
-      />
-
-      {/* Extra Configurable Frame 2 */}
-      {frames[1] && (
-        <PolaroidFrame
-          frame={frames[1]}
-          position={[center[0] - 4.8, 0, center[2] + 2.2]}
-          rotationY={0.82}
-          scale={0.85}
-        />
-      )}
-
-      {/* Extra Configurable Frame 3 */}
-      {frames[2] && (
-        <PolaroidFrame
-          frame={frames[2]}
-          position={[center[0] + 4.6, 0, center[2] - 1.6]}
-          rotationY={-0.18}
-          scale={0.85}
-        />
-      )}
+      {frames.slice(0, 4).map((frame, idx) => {
+        const placement = framePlacements[idx];
+        return (
+          <PolaroidFrame
+            key={frame.id}
+            frame={frame}
+            position={placement.pos}
+            rotationY={placement.rotY}
+            scale={placement.scale}
+          />
+        );
+      })}
 
       {/* Floating Text Cards ("12 AM wishes since day one", "Certified broski", "Ride or die") */}
       <FloatingMemoryCards center={center} />

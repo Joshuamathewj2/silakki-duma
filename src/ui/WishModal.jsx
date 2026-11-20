@@ -8,8 +8,8 @@ function getTimeUntilBirthday() {
   let year = now.getFullYear();
   let target = new Date(
     year,
-    CONFIG.senderBirthday.month - 1,
-    CONFIG.senderBirthday.day,
+    CONFIG.recipientBirthday.month - 1,
+    CONFIG.recipientBirthday.day,
     0,
     0,
     0
@@ -17,8 +17,8 @@ function getTimeUntilBirthday() {
   if (target <= now) {
     target = new Date(
       year + 1,
-      CONFIG.senderBirthday.month - 1,
-      CONFIG.senderBirthday.day,
+      CONFIG.recipientBirthday.month - 1,
+      CONFIG.recipientBirthday.day,
       0,
       0,
       0
@@ -99,7 +99,7 @@ export function WishModal() {
         </div>
       )}
 
-      {/* Funny Countdown to Joshua's Birthday */}
+      {/* Countdown to Srinath's Next Birthday */}
       {countdownOpen && (
         <div className="modal-overlay" role="dialog" aria-modal="true">
           <div className="countdown-card">
@@ -111,9 +111,9 @@ export function WishModal() {
             >
               ✕
             </button>
-            <span className="pill-tag">REVENGE TIMER</span>
-            <h3 className="countdown-title">Countdown to {CONFIG.senderName}'s Birthday</h3>
-            <p className="countdown-sub">Target: 12:00 AM • {CONFIG.senderBirthday.label}</p>
+            <span className="pill-tag">NEXT 12 AM TIMER</span>
+            <h3 className="countdown-title">Countdown to {CONFIG.recipientName}'s Next Birthday</h3>
+            <p className="countdown-sub">Target: 12:00 AM • {CONFIG.recipientBirthday.label}</p>
 
             <div className="countdown-grid">
               <div className="cd-cell">
@@ -134,7 +134,7 @@ export function WishModal() {
               </div>
             </div>
 
-            <p className="countdown-note">{CONFIG.senderBirthday.funnyNote}</p>
+            <p className="countdown-note">{CONFIG.recipientBirthday.funnyNote}</p>
             <button
               type="button"
               className="btn-primary"

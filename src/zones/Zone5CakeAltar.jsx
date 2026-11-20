@@ -27,7 +27,7 @@ function SrinathNPC({ position }) {
     ctx.font = 'bold 30px "Space Grotesk", sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('🎂 SRINATH', 128, 34);
+    ctx.fillText('🎉 JOSHUA', 128, 34);
     const t = new THREE.CanvasTexture(c);
     t.colorSpace = THREE.SRGBColorSpace;
     return t;

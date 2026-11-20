@@ -23,10 +23,10 @@ function createHoodieBackTexture() {
   ctx.fillRect(28, 162, 200, 6);
 
   ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 46px "Space Grotesk", sans-serif';
+  ctx.font = 'bold 42px "Space Grotesk", sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText('JOSHUA', 128, 118);
+  ctx.fillText('SRINATH', 128, 118);
 
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;

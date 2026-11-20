@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.vercel/
+.playwright-mcp/
+Screenshot*.png
+.DS_Store
+*.log
+.env
+.env.local
